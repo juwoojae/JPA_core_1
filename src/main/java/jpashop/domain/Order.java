@@ -3,6 +3,8 @@ package jpashop.domain;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "ORDERS") //db 테이블을 orders 라고 하는이유: order by 라는 지시어와 충돌이 일어나는 db 가 많으므로
@@ -12,18 +14,17 @@ public class Order {
     @Column(name = "ORDER_ID")
     private Long id;
 
-    @Transient
+    @ManyToOne
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
-    @Column(name = "MEMBER_ID")
-    private Long memberId; //누가 주문했는지 추척
+
+    @OneToMany(mappedBy = "order")
+    private List<OrderItem> orderItems = new ArrayList<OrderItem>();
+
     private LocalDateTime orderDate;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
-
-    public Member getMember(){
-        return member;
-    }
 
     public Long getId() {
         return id;
@@ -33,12 +34,12 @@ public class Order {
         this.id = id;
     }
 
-    public Long getMemberId() {
-        return memberId;
+    public Member getMember() {
+        return member;
     }
 
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
+    public void setMember(Member member) {
+        this.member = member;
     }
 
     public LocalDateTime getOrderDate() {
